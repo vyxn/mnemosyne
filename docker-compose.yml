@@ -1,0 +1,30 @@
+version: '3'
+services:
+  web:
+    build:
+      context: ./web
+      dockerfile: dockerfile
+    #image: vyxn/mnemosyne
+    #isolation: process # try if the use of hyperv is avoidable.
+    #container_name: mnemosyne
+    ports:
+      - '3000:3000'
+    networks:
+      - webnet
+    volumes:
+      - ./web:/usr/src/app/:rw
+      - /usr/src/app/node_modules
+    environment:
+      - NODE_ENV=development
+  db:
+    image: rethinkdb
+    ports:
+      - "28015:28015"
+      - "8080:8080"
+    networks:
+      - webnet
+    volumes:
+      - ./db/data/:/data/:rw
+networks:
+  webnet:
+    driver: bridge
